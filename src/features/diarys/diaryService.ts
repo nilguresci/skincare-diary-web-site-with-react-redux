@@ -9,7 +9,15 @@ const keepDiary = async (diaryData: object) => {
   return response.data;
 };
 
+// get diaries
+const getDiaries = async () => {
+  const response = await axios.get(API_URL);
+
+  return response.data;
+};
+
 const diaryService = {
   keepDiary,
+  getDiaries,
 };
 export default diaryService;

@@ -32,6 +32,7 @@ const initialState: diary = {
   message: "",
 };
 
+//keep diary
 export const keepDiary = createAsyncThunk(
   "diarys/keep",
   async (diaryData: diary, thunkAPI) => {
@@ -51,11 +52,62 @@ export const keepDiary = createAsyncThunk(
   }
 );
 
+//get user diaries
+export const getMyDiaries = createAsyncThunk(
+  "diarys/getAll",
+  async (_, thunkAPI) => {
+    try {
+      return await diaryService.getDiaries();
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const diarySlice = createSlice({
   name: "diary",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state: diary) => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      // keep diary işlemi için
+      .addCase(keepDiary.pending, (state: diary) => {
+        state.isLoading = true;
+      })
+      .addCase(keepDiary.fulfilled, (state: diary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.diary = action.payload.diary;
+      })
+      .addCase(keepDiary.rejected, (state: diary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload.message;
+      })
+      // get diaries işlemi için
+      .addCase(getMyDiaries.pending, (state: diary) => {
+        state.isLoading = true;
+      })
+      .addCase(getMyDiaries.fulfilled, (state: diary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        debugger;
+        state.diary = action.payload;
+      })
+      .addCase(getMyDiaries.rejected, (state: diary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload.message;
+      });
   },
 });
 
