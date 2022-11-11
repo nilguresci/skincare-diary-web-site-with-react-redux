@@ -80,6 +80,14 @@ const DiaryForm = () => {
         name === "routinTime" ? (value === "morning" ? true : false) : false, //night
       frequency: name === "frequency" ? value : diary.diary?.frequency,
     };
+
+    const newDiary: Diary = {
+      diary: newRoutinInfo,
+      isError: false,
+      isSuccess: true,
+      isLoading: true,
+      message: "Girildi",
+    };
     setDiary({ ...diary, diary: newRoutinInfo } as Diary);
     // setDiary(
     //   Object.assign(
@@ -99,7 +107,7 @@ const DiaryForm = () => {
   const onSubmit = (e: any) => {
     e.preventDefault();
 
-    dispatch(keepDiary({ diary }));
+    dispatch(keepDiary(diary));
     setDiary({} as Diary);
   };
 
