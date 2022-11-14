@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import KeepDiary from "./pages/KeepDiary";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import MyDiaries from "./pages/MyDiaries";
 // import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<KeepDiary />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
+            <Route path="/myDiaries" element={<MyDiaries />}></Route>
           </Routes>
         </div>
       </Router>

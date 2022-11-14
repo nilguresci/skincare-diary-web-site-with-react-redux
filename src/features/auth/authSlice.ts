@@ -15,9 +15,10 @@ type userInitialInfo = {
   message: string;
 };
 //localStorage.setItem("user", "");
-console.log(localStorage.getItem("user"));
+
 //get user from localstorage
-const user = JSON.parse(localStorage.getItem("user") || "{}");
+const localStorageData = localStorage.getItem("user");
+const user = localStorageData ? JSON.parse(localStorageData) : null;
 
 const initialState: userInitialInfo = {
   user: user ? user : null,

@@ -21,6 +21,9 @@ const KeepDiary = () => {
 
   const newObj: userInitialInfo = useSelector((state: any) => state.auth);
   console.log("aaaa", newObj);
+
+  const localStorageData = localStorage.getItem("user");
+
   useEffect(() => {
     if (!newObj.user || newObj.user === null) {
       navigate("/login");
@@ -29,7 +32,13 @@ const KeepDiary = () => {
   return (
     <div>
       <section className="heading">
-        <h1> Welcome {newObj && newObj.user.name}</h1>
+        <h1>
+          {" "}
+          Welcome{" "}
+          {localStorageData
+            ? JSON.parse(localStorageData).name
+            : newObj && newObj.user.name}
+        </h1>
         <p>Keep your skincare diary</p>
       </section>
       <DiaryForm />

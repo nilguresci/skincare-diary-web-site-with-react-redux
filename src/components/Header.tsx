@@ -22,17 +22,25 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
   const user: userInitialInfo = useSelector((state: any) => state.auth);
-
+  console.log(user.user);
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
-    navigate("/");
+    navigate("/login");
   };
 
   return (
     <header className="header">
       <div className="logo">
         <Link to="/">Your Skincare Diary</Link>
+
+        {user.user ? (
+          <Link to="/myDiaries" className="myDiariesLink">
+            My Diaries
+          </Link>
+        ) : (
+          <></>
+        )}
       </div>
       <ul>
         {user.user ? (
