@@ -3,8 +3,8 @@ import ViewDiaries from "../components/ViewDiaries";
 
 const MyDiaries = () => {
   return (
-    <div>
-      <section className="heading">Date : 14.11.2022</section>
+    <div className="myDiaries">
+      <section className="heading">Date : 14.11.2022 Monday</section>
       <ViewDiaries />
     </div>
   );

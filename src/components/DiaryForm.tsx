@@ -32,6 +32,7 @@ const DiaryForm = () => {
     brandName: "Klairs",
     category: "Moisturizer",
   };
+
   const routinInfoTemp: RoutinInfo = {
     product: productTemp,
     comment:
@@ -41,6 +42,7 @@ const DiaryForm = () => {
     routinTime: false, //night
     frequency: "every day",
   };
+
   const diaryTemp: Diary = {
     diary: routinInfoTemp,
     isError: false,
@@ -114,7 +116,7 @@ const DiaryForm = () => {
   return (
     <section className="form">
       <form onSubmit={onSubmit}>
-        <div className="form-group d-flex">
+        <div className="form-group flex-column">
           <div className="item">
             <label htmlFor="categorys">Category</label>
 

@@ -4,7 +4,7 @@ const ViewDiaries = () => {
   return (
     <section className="form viewDiaries">
       <form>
-        <div className="form-group d-flex">
+        <div className="form-group d-flex flex-column">
           <div className="item">
             <label htmlFor="categorys" className="viewLabel">
               Category
