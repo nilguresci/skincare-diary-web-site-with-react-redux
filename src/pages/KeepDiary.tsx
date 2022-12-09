@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DiaryForm from "../components/DiaryForm";
 import { FaPlus } from "react-icons/fa";
+import { GiCoveredJar } from "react-icons/gi";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ProductModal from "../components/ProductModal";
@@ -42,15 +43,15 @@ const KeepDiary = (props: any) => {
   let btnId: any = 0;
   let openModal: any = 0;
 
-  const [modalShow, setModalShow] = useState(false);
   const [list, setList] = useState(true);
-
+  const [modalShow, setModalShow] = useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true);
   };
 
-  const generateButtons = (index: any) => {
+  const generateButtons = (count: any) => {
+    console.log("parent handle save");
     let buttons = [];
 
     for (let i = 0; i < count; i++) {
@@ -63,11 +64,12 @@ const KeepDiary = (props: any) => {
             id={"addProduct" + btnId}
             onClick={() => handleShow()}
           >
-            Add product
+            <GiCoveredJar />
           </Button>
         </div>
       );
     }
+
     return buttons;
   };
 
@@ -83,49 +85,20 @@ const KeepDiary = (props: any) => {
         </h1>
         <p>Keep your skincare diary</p>
       </section>
-      {list ? (
+      {count > 0 ? (
         <div>
           <p>Products you use today</p>
-          <Table striped>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td colSpan={2}>Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
-            </tbody>
-          </Table>
         </div>
       ) : (
         <p>You didn't add any product today.</p>
       )}
 
       <div className="plusContainer">
-        {generateButtons(btnId)}
+        {generateButtons(count)}
         <button
           type="submit"
           id={"addProduct" + btnId}
-          onClick={() => setCount((count) => count + 1)}
+          onClick={() => handleShow()}
         >
           <div className="plus">
             <FaPlus />
@@ -136,6 +109,8 @@ const KeepDiary = (props: any) => {
         show={modalShow}
         id={"modal" + btnId}
         onHide={() => setModalShow(false)}
+        parentSave={() => generateButtons(setCount((count) => count + 1))}
+        count={count}
       />
     </div>
   );

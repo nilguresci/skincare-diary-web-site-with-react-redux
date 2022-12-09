@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { keepDiary } from "../features/diarys/diarySlice";
+import Button from "react-bootstrap/Button";
 
-const DiaryForm = () => {
+const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
 
   type Product = {
@@ -247,10 +248,18 @@ const DiaryForm = () => {
             </div>
           </div>
           <div className="item saveBtn">
-            <button type="submit" className="btn btn-light">
+            <button
+              type="submit"
+              className="btn btn-light"
+              onClick={() => {
+                props.handleClose();
+                props.handleSave();
+              }}
+            >
               Save
             </button>
           </div>
+          {/* <input onChange={props.handleChange} /> */}
         </div>
       </form>
     </section>

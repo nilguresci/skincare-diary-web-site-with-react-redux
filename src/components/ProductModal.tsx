@@ -2,6 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DiaryForm from "../components/DiaryForm";
+import { useState, useEffect } from "react";
 
 const ProductModal = (props: any) => {
   return (
@@ -18,8 +19,13 @@ const ProductModal = (props: any) => {
       </Modal.Header>
       <Modal.Body>
         <h4>Centered Modal</h4>
-        <DiaryForm />
+        <DiaryForm
+          handleSave={props.parentSave}
+          count={props.count}
+          handleClose={props.onHide}
+        />
       </Modal.Body>
+
       {/* <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer> */}
