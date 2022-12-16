@@ -6,17 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { login, reset } from "../features/auth/authSlice";
+import { IUser, IUserInitialInfo } from "../models/UserModel";
 
 const Login = () => {
-  type User = {
-    email: string;
-    password: string;
-  };
-  const userTemp: User = {
+  const userTemp: IUser = {
+    name: "",
     email: "",
     password: "",
   };
-  const [user, setUser] = useState<User>({} as User);
+  const [user, setUser] = useState<IUser>({} as IUser);
 
   useEffect(() => {
     setUser(userTemp);
@@ -26,15 +24,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
 
-  type userInitialInfo = {
-    user: User | any;
-    isError: boolean;
-    isSuccess: boolean;
-    isLoading: boolean;
-    message: string;
-  };
-
-  const newObj: userInitialInfo = useSelector((state: any) => state.auth);
+  const newObj: IUserInitialInfo = useSelector((state: any) => state.auth);
 
   useEffect(() => {
     if (newObj.isError) {
@@ -65,12 +55,13 @@ const Login = () => {
   const onSubmit = (e: any) => {
     e.preventDefault();
 
-    const userData: User = {
+    const userData: IUser = {
+      name: user.name,
       email: user.email,
       password: user.password,
     };
 
-    const userInitialInfoData: userInitialInfo = {
+    const userInitialInfoData: IUserInitialInfo = {
       user: userData,
       isError: false,
       isSuccess: false,

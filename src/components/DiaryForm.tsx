@@ -2,39 +2,20 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { keepDiary } from "../features/diarys/diarySlice";
 import Button from "react-bootstrap/Button";
+import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 
 const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
 
-  type Product = {
-    productName: string;
-    brandName: string;
-    category: string;
-  };
+  const localStorageData = localStorage.getItem("user");
 
-  type RoutinInfo = {
-    product: Product;
-    comment: string;
-    takenAgain?: boolean;
-    target: string;
-    routinTime: boolean; //true:morning false:night
-    frequency: string;
-  };
-
-  type Diary = {
-    diary: RoutinInfo | null;
-    isError: boolean;
-    isSuccess: boolean;
-    isLoading: boolean;
-    message: string;
-  };
-  const productTemp: Product = {
+  const productTemp: IProduct = {
     productName: "Midnight Moisturizer",
     brandName: "Klairs",
     category: "Moisturizer",
   };
 
-  const routinInfoTemp: RoutinInfo = {
+  const routinInfoTemp: IRoutinInfo = {
     product: productTemp,
     comment:
       "Shop skincare products at Sephora. Find top-rated products from leading skincare brands to help target specific skin concerns and revitalize your look",
@@ -44,54 +25,63 @@ const DiaryForm = (props: any) => {
     frequency: "every day",
   };
 
-  const diaryTemp: Diary = {
-    diary: routinInfoTemp,
+  const diaryTemp: IDiary = {
+    diary: [routinInfoTemp],
     isError: false,
     isSuccess: false,
     isLoading: false,
     message: "diaryform",
+    userId: localStorageData ? JSON.parse(localStorageData) : null,
   };
-  const [diary, setDiary] = useState<Diary>({} as Diary);
 
+  const [diary, setDiary] = useState<IDiary>({} as IDiary);
+  const [newProduct, setProduct] = useState<IProduct>({} as IProduct);
+  console.log("d", diary);
   useEffect(() => {
+    console.log("d", diary);
     setDiary(diaryTemp);
+    setProduct(productTemp);
   }, []);
 
   const onChange = (e: any) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
+    console.log("n", name);
+    console.log("v", value);
 
-    const product: Product = {
-      productName:
-        name === "productName" ? value : diary.diary?.product.productName,
-      brandName: name === "brand" ? value : diary.diary?.product.brandName,
-      category: name === "categorys" ? value : diary.diary?.product.category,
+    const product: IProduct = {
+      productName: name === "productName" ? value : newProduct.productName,
+      brandName: name === "brand" ? value : newProduct.brandName, // diary.diary?.product.brandName,
+      category: name === "categorys" ? value : newProduct.category, // diary.diary?.product.category,
     };
-    //setDiary({ ...diary.diary?,name, value });
-    const newRoutinInfo: RoutinInfo = {
-      product: product,
-      comment: name === "comment" ? value : diary.diary?.comment,
+    console.log("product", product);
+
+    setProduct({ ...newProduct, productName: product.productName });
+    setProduct({ ...newProduct, brandName: product.brandName });
+    setProduct({ ...newProduct, category: product.category });
+    const newRoutinInfo: IRoutinInfo = {
+      product: newProduct,
+      comment: name === "comment" ? value : routinInfoTemp.comment, // diary.diary?.comment,
       takenAgain:
         name === "takenAgain"
           ? value === "yes"
             ? true
             : false
-          : diary.diary?.takenAgain,
-      target: name === "target" ? value : diary.diary?.target,
+          : routinInfoTemp.takenAgain, // diary.diary?.takenAgain,
+      target: name === "target" ? value : routinInfoTemp.target, // diary.diary?.target,
       routinTime:
         name === "routinTime" ? (value === "morning" ? true : false) : false, //night
-      frequency: name === "frequency" ? value : diary.diary?.frequency,
+      frequency: name === "frequency" ? value : routinInfoTemp.frequency, // diary.diary?.frequency,
     };
 
-    const newDiary: Diary = {
-      diary: newRoutinInfo,
+    const newDiary: IDiary = {
+      diary: [newRoutinInfo],
       isError: false,
       isSuccess: true,
       isLoading: true,
       message: "Girildi",
+      userId: "rewreewr",
     };
-    setDiary({ ...diary, diary: newRoutinInfo } as Diary);
+    setDiary({ ...diary, diary: newDiary.diary } as IDiary);
     // setDiary(
     //   Object.assign(
     //     {},
@@ -104,14 +94,14 @@ const DiaryForm = (props: any) => {
     //     value
     //   )
     // );
-    console.log(diary);
+    console.log("ddddd", diary);
   };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
 
     dispatch(keepDiary(diary));
-    setDiary({} as Diary);
+    setDiary({} as IDiary);
   };
 
   return (
@@ -124,6 +114,7 @@ const DiaryForm = (props: any) => {
             <select
               name="categorys"
               id="categorys"
+              value={newProduct.category}
               onChange={(e) => onChange(e)}
             >
               <option value="volvo">Volvo</option>
@@ -134,7 +125,12 @@ const DiaryForm = (props: any) => {
           </div>
           <div className="item">
             <label htmlFor="brand">Brand</label>
-            <select name="brand" id="brand" onChange={(e) => onChange(e)}>
+            <select
+              name="brand"
+              id="brand"
+              value={newProduct.brandName}
+              onChange={(e) => onChange(e)}
+            >
               <option value="Klairs">Klairs</option>
               <option value="Dermoskin">Dermoskin</option>
               <option value="Celenes">Celenes</option>
@@ -146,6 +142,7 @@ const DiaryForm = (props: any) => {
             <select
               name="productName"
               id="productName"
+              value={newProduct.productName}
               onChange={(e) => onChange(e)}
             >
               <option value="volvo">Volvo</option>
@@ -218,7 +215,7 @@ const DiaryForm = (props: any) => {
               name="comment"
               cols={40}
               rows={5}
-              value={diary.diary?.comment}
+              //value={diary.comment}
               onChange={(e) => onChange(e)}
             ></textarea>
           </div>

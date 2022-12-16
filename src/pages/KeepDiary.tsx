@@ -8,18 +8,29 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ProductModal from "../components/ProductModal";
 import ListGroup from "react-bootstrap/ListGroup";
-
+import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
+import { getMyDiaries, reset } from "../features/diarys/diarySlice";
+import { IUser, IUserInitialInfo } from "../models/UserModel";
 
 const KeepDiary = (props: any) => {
-  type User = {
-    email: string;
-    password: string;
-    name: string;
+  type Product = {
+    productName: string;
+    brandName: string;
+    category: string;
   };
 
-  type userInitialInfo = {
-    user: User;
+  type RoutinInfo = {
+    product: Product;
+    comment: string;
+    takenAgain?: boolean;
+    target: string;
+    routinTime: boolean; //true:morning false:night
+    frequency: string;
+  };
+
+  type Diary = {
+    diary: RoutinInfo | null;
     isError: boolean;
     isSuccess: boolean;
     isLoading: boolean;
@@ -27,23 +38,46 @@ const KeepDiary = (props: any) => {
   };
 
   const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
 
-  const newObj: userInitialInfo = useSelector((state: any) => state.auth);
-  console.log("aaaa", newObj);
+  const newObj: IUserInitialInfo = useSelector((state: any) => state.auth); //login olan user
+  console.log("loggedin user", newObj);
 
   const localStorageData = localStorage.getItem("user");
+  //console.log("localstorage", localStorageData);
 
+  const diaries: Diary = useSelector((state: any) => state.diarys.diary);
+  const diariesState: Diary = useSelector((state: any) => state.diarys);
+  console.log("aaa", diaries);
   useEffect(() => {
+    debugger;
+    if (diariesState.isError) {
+      console.log(diariesState.message);
+    }
+
     if (!newObj.user || newObj.user === null) {
       navigate("/login");
     }
-  }, [newObj, navigate]);
+
+    dispatch(getMyDiaries());
+
+    return () => {
+      reset();
+    };
+  }, [
+    newObj,
+    navigate,
+    //diaries,
+    // diariesState,
+    // diariesState.isError,
+    // diariesState.message,
+    dispatch,
+  ]);
 
   const [count, setCount] = useState(0);
   let btnId: any = 0;
   let openModal: any = 0;
 
-  const [list, setList] = useState(true);
   const [modalShow, setModalShow] = useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
@@ -73,6 +107,9 @@ const KeepDiary = (props: any) => {
     return buttons;
   };
 
+  if (diariesState.isLoading) {
+    return <Spinner />;
+  }
   return (
     <div>
       <section className="heading">
@@ -80,8 +117,8 @@ const KeepDiary = (props: any) => {
           {" "}
           Welcome{" "}
           {localStorageData
-            ? JSON.parse(localStorageData).name
-            : newObj && newObj.user.name}
+            ? JSON.parse(localStorageData).user.name
+            : newObj && newObj.user.user.name}
         </h1>
         <p>Keep your skincare diary</p>
       </section>

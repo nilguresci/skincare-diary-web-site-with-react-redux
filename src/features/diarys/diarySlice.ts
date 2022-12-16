@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import diaryService from "./diaryService";
+import { IDiary, IRoutinInfo, IProduct } from "../../models/DiaryModels";
 
 type Product = {
   productName: string;
@@ -17,25 +18,26 @@ type routinInfo = {
 };
 
 type diary = {
-  diary: routinInfo | null;
+  diary: routinInfo | null; //birden fazla routin info tutulacak
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
   message: string;
 };
-
-const initialState: diary = {
+const localStorageData = localStorage.getItem("user");
+const initialState: IDiary = {
   diary: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: "",
+  userId: localStorageData ? JSON.parse(localStorageData) : null,
 };
 
 //keep diary
 export const keepDiary = createAsyncThunk(
   "diarys/keep",
-  async (diaryData: diary, thunkAPI) => {
+  async (diaryData: IDiary, thunkAPI) => {
     try {
       //const token = thunkAPI.getState().auth.user.token
       return await diaryService.keepDiary(diaryData);
@@ -53,7 +55,7 @@ export const keepDiary = createAsyncThunk(
 );
 
 //get user diaries
-export const getMyDiaries = createAsyncThunk(
+export const getMyDiaries: any = createAsyncThunk(
   "diarys/getAll",
   async (_, thunkAPI) => {
     try {
@@ -75,38 +77,40 @@ export const diarySlice = createSlice({
   name: "diary",
   initialState,
   reducers: {
-    reset: (state: diary) => initialState,
+    reset: (state: IDiary) => initialState,
   },
   extraReducers: (builder) => {
     builder
       // keep diary işlemi için
-      .addCase(keepDiary.pending, (state: diary) => {
+      .addCase(keepDiary.pending, (state: IDiary) => {
         state.isLoading = true;
       })
-      .addCase(keepDiary.fulfilled, (state: diary, action: any) => {
+      .addCase(keepDiary.fulfilled, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.diary = action.payload.diary;
+
+        state.diary = action.payload.diary; // state.diary dizisine e buradaki değer eklenmeli, düzeltilecek
       })
-      .addCase(keepDiary.rejected, (state: diary, action: any) => {
+      .addCase(keepDiary.rejected, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.message = action.payload.message;
       })
       // get diaries işlemi için
-      .addCase(getMyDiaries.pending, (state: diary) => {
+      .addCase(getMyDiaries.pending, (state: IDiary) => {
         state.isLoading = true;
       })
-      .addCase(getMyDiaries.fulfilled, (state: diary, action: any) => {
+      .addCase(getMyDiaries.fulfilled, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
         debugger;
+        console.log(action.payload);
         state.diary = action.payload;
       })
-      .addCase(getMyDiaries.rejected, (state: diary, action: any) => {
+      .addCase(getMyDiaries.rejected, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.message = action.payload.message;
+        state.message = action.payload;
       });
   },
 });
