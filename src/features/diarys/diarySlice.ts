@@ -2,28 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import diaryService from "./diaryService";
 import { IDiary, IRoutinInfo, IProduct } from "../../models/DiaryModels";
 
-type Product = {
-  productName: string;
-  brandName: string;
-  category: string;
-};
-
-type routinInfo = {
-  product: Product;
-  comment: string;
-  takenAgain?: boolean;
-  target: string;
-  routinTime: boolean; //true:morning false:night
-  frequency: string;
-};
-
-type diary = {
-  diary: routinInfo | null; //birden fazla routin info tutulacak
-  isError: boolean;
-  isSuccess: boolean;
-  isLoading: boolean;
-  message: string;
-};
 const localStorageData = localStorage.getItem("user");
 const initialState: IDiary = {
   diary: null,

@@ -39,7 +39,7 @@ const login = async (userData: any) => {
     .then((res: any) => {
       console.log("res", res);
       if (res) {
-        localStorage.setItem("user", JSON.stringify(res.user));
+        localStorage.setItem("user", JSON.stringify(res));
       }
       return res;
     })

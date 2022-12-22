@@ -91,7 +91,7 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state: IUserInitialInfo, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.meta.arg.user;
+        state.user = action.meta.arg;
       })
       .addCase(login.rejected, (state: IUserInitialInfo, action) => {
         state.isLoading = false;

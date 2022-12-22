@@ -15,32 +15,40 @@ const DiaryForm = (props: any) => {
     category: "Moisturizer",
   };
 
-  const routinInfoTemp: IRoutinInfo = {
-    product: productTemp,
-    comment:
-      "Shop skincare products at Sephora. Find top-rated products from leading skincare brands to help target specific skin concerns and revitalize your look",
-    takenAgain: true,
-    target: "moistening",
-    routinTime: false, //night
-    frequency: "every day",
-  };
+  const routinInfoTemp: IRoutinInfo[] = [
+    {
+      product: productTemp,
+      comment:
+        "Shop skincare products at Sephora. Find top-rated products from leading skincare brands to help target specific skin concerns and revitalize your look",
+      takenAgain: true,
+      target: "moistening",
+      routinTime: false, //night
+      frequency: "every day",
+    },
+  ];
 
   const diaryTemp: IDiary = {
-    diary: [routinInfoTemp],
+    diary: routinInfoTemp,
     isError: false,
     isSuccess: false,
     isLoading: false,
     message: "diaryform",
-    userId: localStorageData ? JSON.parse(localStorageData) : null,
+    userId: localStorageData ? JSON.parse(localStorageData).userId : null,
   };
 
   const [diary, setDiary] = useState<IDiary>({} as IDiary);
   const [newProduct, setProduct] = useState<IProduct>({} as IProduct);
+  const [newRoutinInfo, setRoutinInfo] = useState<IRoutinInfo>(
+    {} as IRoutinInfo
+  );
+  const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
+
   console.log("d", diary);
   useEffect(() => {
     console.log("d", diary);
     setDiary(diaryTemp);
     setProduct(productTemp);
+    //setRoutins(routins);
   }, []);
 
   const onChange = (e: any) => {
@@ -48,56 +56,38 @@ const DiaryForm = (props: any) => {
     console.log("n", name);
     console.log("v", value);
 
-    const product: IProduct = {
-      productName: name === "productName" ? value : newProduct.productName,
-      brandName: name === "brand" ? value : newProduct.brandName, // diary.diary?.product.brandName,
-      category: name === "categorys" ? value : newProduct.category, // diary.diary?.product.category,
-    };
-    console.log("product", product);
+    if (name === "productName" || name === "brandName" || name === "category") {
+      setProduct({
+        ...newProduct,
+        [e.target.name]: e.target.value,
+      } as IProduct);
+    } else {
+      setRoutinInfo({
+        ...newRoutinInfo,
+        product: newProduct,
+        [e.target.name]: e.target.value,
+      } as IRoutinInfo);
+    }
 
-    setProduct({ ...newProduct, productName: product.productName });
-    setProduct({ ...newProduct, brandName: product.brandName });
-    setProduct({ ...newProduct, category: product.category });
-    const newRoutinInfo: IRoutinInfo = {
-      product: newProduct,
-      comment: name === "comment" ? value : routinInfoTemp.comment, // diary.diary?.comment,
-      takenAgain:
-        name === "takenAgain"
-          ? value === "yes"
-            ? true
-            : false
-          : routinInfoTemp.takenAgain, // diary.diary?.takenAgain,
-      target: name === "target" ? value : routinInfoTemp.target, // diary.diary?.target,
-      routinTime:
-        name === "routinTime" ? (value === "morning" ? true : false) : false, //night
-      frequency: name === "frequency" ? value : routinInfoTemp.frequency, // diary.diary?.frequency,
-    };
+    routins.push(newRoutinInfo);
+    setRoutins(routins);
+
+    //setDiary({ ...diary, [e.target.name]: e.target.value } as IDiary);
 
     const newDiary: IDiary = {
-      diary: [newRoutinInfo],
+      diary: routins,
       isError: false,
       isSuccess: true,
       isLoading: true,
       message: "Girildi",
-      userId: "rewreewr",
+      userId: localStorageData ? JSON.parse(localStorageData).userId : null,
     };
     setDiary({ ...diary, diary: newDiary.diary } as IDiary);
-    // setDiary(
-    //   Object.assign(
-    //     {},
-    //     false,
-    //     true,
-    //     undefined,
-    //     null,
-    //     0,
-    //     diary.diary?.comment,
-    //     value
-    //   )
-    // );
+
     console.log("ddddd", diary);
   };
 
-  const onSubmit = (e: any) => {
+  const onSubmit = async (e: any) => {
     e.preventDefault();
 
     dispatch(keepDiary(diary));
@@ -112,7 +102,7 @@ const DiaryForm = (props: any) => {
             <label htmlFor="categorys">Category</label>
 
             <select
-              name="categorys"
+              name="category"
               id="categorys"
               value={newProduct.category}
               onChange={(e) => onChange(e)}
@@ -126,7 +116,7 @@ const DiaryForm = (props: any) => {
           <div className="item">
             <label htmlFor="brand">Brand</label>
             <select
-              name="brand"
+              name="brandName"
               id="brand"
               value={newProduct.brandName}
               onChange={(e) => onChange(e)}
@@ -153,7 +143,12 @@ const DiaryForm = (props: any) => {
           </div>
           <div className="item">
             <label htmlFor="target">Target</label>
-            <select name="target" id="target" onChange={(e) => onChange(e)}>
+            <select
+              name="target"
+              value={newRoutinInfo.target}
+              id="target"
+              onChange={(e) => onChange(e)}
+            >
               <option value="Intense moustrizing">Yoğun nemlendirme</option>
               <option value="Anti acne">Sivilce Karşıtı</option>
               <option value="Moustrizing & Repair">Nemlendirme & Onarım</option>
@@ -196,6 +191,7 @@ const DiaryForm = (props: any) => {
             <select
               name="frequency"
               id="frequency"
+              value={newRoutinInfo.frequency}
               onChange={(e) => onChange(e)}
             >
               <option value="Every day">Every day</option>
@@ -215,7 +211,7 @@ const DiaryForm = (props: any) => {
               name="comment"
               cols={40}
               rows={5}
-              //value={diary.comment}
+              value={newRoutinInfo.comment}
               onChange={(e) => onChange(e)}
             ></textarea>
           </div>

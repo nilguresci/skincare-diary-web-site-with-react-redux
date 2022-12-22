@@ -12,43 +12,23 @@ import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
 import { getMyDiaries, reset } from "../features/diarys/diarySlice";
 import { IUser, IUserInitialInfo } from "../models/UserModel";
+import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 
 const KeepDiary = (props: any) => {
-  type Product = {
-    productName: string;
-    brandName: string;
-    category: string;
-  };
-
-  type RoutinInfo = {
-    product: Product;
-    comment: string;
-    takenAgain?: boolean;
-    target: string;
-    routinTime: boolean; //true:morning false:night
-    frequency: string;
-  };
-
-  type Diary = {
-    diary: RoutinInfo | null;
-    isError: boolean;
-    isSuccess: boolean;
-    isLoading: boolean;
-    message: string;
-  };
-
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
 
   const newObj: IUserInitialInfo = useSelector((state: any) => state.auth); //login olan user
   console.log("loggedin user", newObj);
 
-  const localStorageData = localStorage.getItem("user");
-  //console.log("localstorage", localStorageData);
+  const localStorageData: any = localStorage.getItem("user");
+  //console.log("localstorage", JSON.parse(localStorageData));
 
-  const diaries: Diary = useSelector((state: any) => state.diarys.diary);
-  const diariesState: Diary = useSelector((state: any) => state.diarys);
+  const diaries: IDiary = useSelector((state: any) => state.diarys.diary);
+  const diariesState: IDiary = useSelector((state: any) => state.diarys);
+
   console.log("aaa", diaries);
+
   useEffect(() => {
     debugger;
     if (diariesState.isError) {
