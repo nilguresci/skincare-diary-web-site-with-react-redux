@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { keepDiary } from "../features/diarys/diarySlice";
+import { keepDiary, updateDiary } from "../features/diarys/diarySlice";
+import { getCategories, resetCat } from "../features/products/productSlice";
 import Button from "react-bootstrap/Button";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 
@@ -34,9 +35,10 @@ const DiaryForm = (props: any) => {
     isLoading: false,
     message: "diaryform",
     userId: localStorageData ? JSON.parse(localStorageData).userId : null,
+    id: props.diaries[0] ? props.diaries[0].id : null,
   };
 
-  const [diary, setDiary] = useState<IDiary>({} as IDiary);
+  const [diary, setDiary] = useState<IDiary>(props.diaries as IDiary);
   const [newProduct, setProduct] = useState<IProduct>({} as IProduct);
   const [newRoutinInfo, setRoutinInfo] = useState<IRoutinInfo>(
     {} as IRoutinInfo
@@ -44,12 +46,29 @@ const DiaryForm = (props: any) => {
   const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
 
   console.log("d", diary);
+
+  //const products: any = useSelector((state: any) => state.products);
+
   useEffect(() => {
     console.log("d", diary);
     setDiary(diaryTemp);
     setProduct(productTemp);
+
+    // if (products.isError) {
+    //   console.log(products.message);
+    // }
+    debugger;
+    // dispatch(getCategories()).then(async () => {
+    //   (await products)
+    //     ? console.log("sephora productssssss", products)
+    //     : console.log("yok");
+    // });
     //setRoutins(routins);
-  }, []);
+
+    // return () => {
+    //   reset();
+    // };
+  }, [dispatch]);
 
   const onChange = (e: any) => {
     const { name, value } = e.target;
@@ -81,6 +100,7 @@ const DiaryForm = (props: any) => {
       isLoading: true,
       message: "Girildi",
       userId: localStorageData ? JSON.parse(localStorageData).userId : null,
+      id: props.diaries[0] ? props.diaries[0].id : null,
     };
     setDiary({ ...diary, diary: newDiary.diary } as IDiary);
 
@@ -89,8 +109,15 @@ const DiaryForm = (props: any) => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
+    debugger;
+    if (props.diaries.length !== 0) {
+      console.log("diary form update", props.diaries);
+      console.log("diary form update", diary);
+      dispatch(updateDiary(diary));
+    } else {
+      dispatch(keepDiary(diary));
+    }
 
-    dispatch(keepDiary(diary));
     setDiary({} as IDiary);
   };
 
@@ -107,10 +134,12 @@ const DiaryForm = (props: any) => {
               value={newProduct.category}
               onChange={(e) => onChange(e)}
             >
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+              <option value="Cleaner">Cleaner</option>
+              <option value="sunscreen">Sunscreen</option>
+              <option value="moisturizer">Moisturizer</option>
+              <option value="serum">Serum</option>
+              <option value="tonic">Tonic</option>
+              <option value="mask">Mask</option>
             </select>
           </div>
           <div className="item">
@@ -134,11 +163,18 @@ const DiaryForm = (props: any) => {
               id="productName"
               value={newProduct.productName}
               onChange={(e) => onChange(e)}
+              className="text-truncate"
             >
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+              <option value="krem">Ato Probiyotik Krem</option>
+              <option value="krem2">Midnight Blue Moustrizer</option>
+              <option value="tonik" className="text-truncate">
+                Gözenek Sıkılaştırıcı Ve Arındırıcı Tonik (glycolic Acid 5% Aha
+                + Bha)
+              </option>
+              <option value="suns" className="text-truncate">
+                Aqua Soothing Uv Protector Spf 50+ Pa++++ Sakinleştirici
+                Fiziksel Uv Vegan
+              </option>
             </select>
           </div>
           <div className="item">

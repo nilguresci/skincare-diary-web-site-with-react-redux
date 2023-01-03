@@ -32,6 +32,26 @@ export const keepDiary = createAsyncThunk(
   }
 );
 
+//update diary - when user added a new product to diary for today
+export const updateDiary = createAsyncThunk(
+  "diarys/update",
+  async (diaryData: IDiary, thunkAPI) => {
+    try {
+      //const token = thunkAPI.getState().auth.user.token
+      return await diaryService.updateDiary(diaryData);
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 //get user diaries
 export const getMyDiaries: any = createAsyncThunk(
   "diarys/getAll",
@@ -66,7 +86,6 @@ export const diarySlice = createSlice({
       .addCase(keepDiary.fulfilled, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-
         state.diary = action.payload.diary; // state.diary dizisine e buradaki değer eklenmeli, düzeltilecek
       })
       .addCase(keepDiary.rejected, (state: IDiary, action: any) => {
@@ -81,11 +100,24 @@ export const diarySlice = createSlice({
       .addCase(getMyDiaries.fulfilled, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-        debugger;
-        console.log(action.payload);
         state.diary = action.payload;
       })
       .addCase(getMyDiaries.rejected, (state: IDiary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      // update diary işlemi için
+      .addCase(updateDiary.pending, (state: IDiary) => {
+        state.isLoading = true;
+      })
+      .addCase(updateDiary.fulfilled, (state: IDiary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        //console.log(action.payload);
+        state.diary = action.payload;
+      })
+      .addCase(updateDiary.rejected, (state: IDiary, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.message = action.payload;

@@ -20,4 +20,5 @@ export interface IDiary {
   isLoading: boolean;
   message: string;
   userId: string; //diary i kayıt giren kullanıcının id'si // kullanıcı giriş yaptığında alınacak
+  id?: string;
 }

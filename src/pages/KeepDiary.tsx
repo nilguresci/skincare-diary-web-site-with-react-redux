@@ -11,6 +11,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
 import { getMyDiaries, reset } from "../features/diarys/diarySlice";
+import { getCategories, resetCat } from "../features/products/productSlice";
 import { IUser, IUserInitialInfo } from "../models/UserModel";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 
@@ -24,10 +25,11 @@ const KeepDiary = (props: any) => {
   const localStorageData: any = localStorage.getItem("user");
   //console.log("localstorage", JSON.parse(localStorageData));
 
-  const diaries: IDiary = useSelector((state: any) => state.diarys.diary);
+  const diaries: any = useSelector((state: any) => state.diarys.diary);
   const diariesState: IDiary = useSelector((state: any) => state.diarys);
-
-  console.log("aaa", diaries);
+  const categories: any = useSelector((state: any) => state.categories);
+  console.log("diariesSatet", diariesState);
+  console.log("aaa", categories);
 
   useEffect(() => {
     debugger;
@@ -39,7 +41,15 @@ const KeepDiary = (props: any) => {
       navigate("/login");
     }
 
-    dispatch(getMyDiaries());
+    dispatch(getMyDiaries()).then(async () =>
+      (await diaries)
+        ? generateButtons(setCount(diaries[0].diary.length), diaries[0])
+        : console.log("bulunamadı")
+    );
+
+    dispatch(getCategories()).then(async () =>
+      (await categories) ? console.log(categories) : console.log("bulunamadı")
+    );
 
     return () => {
       reset();
@@ -64,8 +74,8 @@ const KeepDiary = (props: any) => {
     setModalShow(true);
   };
 
-  const generateButtons = (count: any) => {
-    console.log("parent handle save");
+  const generateButtons = (count: any, diary?: IRoutinInfo[]) => {
+    console.log("parent handle save", count);
     let buttons = [];
 
     for (let i = 0; i < count; i++) {
@@ -103,7 +113,7 @@ const KeepDiary = (props: any) => {
         <p>Keep your skincare diary</p>
       </section>
       {count > 0 ? (
-        <div>
+        <div className="productsHeaderText">
           <p>Products you use today</p>
         </div>
       ) : (
@@ -128,6 +138,7 @@ const KeepDiary = (props: any) => {
         onHide={() => setModalShow(false)}
         parentSave={() => generateButtons(setCount((count) => count + 1))}
         count={count}
+        diaries={diaries}
       />
     </div>
   );

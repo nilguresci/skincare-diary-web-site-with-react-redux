@@ -79,7 +79,7 @@ h3 {
 .heading {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 50px;
+  margin-bottom: 45px;
   padding: 0 20px;
 }
 
@@ -87,6 +87,9 @@ h3 {
   color: purple;
 }
 
+.productsHeaderText {
+  margin-bottom: 35px;
+}
 .form,
 .content {
   width: 70%;
@@ -115,6 +118,7 @@ h3 {
 }
 .plusContainer {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .plusContainer button {
@@ -124,6 +128,7 @@ h3 {
   border-radius: 11%;
   border-color: transparent;
   margin-right: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .plusContainer .plus {
@@ -179,7 +184,13 @@ h3 {
 /* .btn svg {
   margin-right: 8px;
 } */
-
+/* select,
+select > option {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
 .btn-reverse {
   background: #fff;
   color: #000;
