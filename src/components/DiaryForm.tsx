@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { keepDiary, updateDiary } from "../features/diarys/diarySlice";
-import { getCategories, resetCat } from "../features/products/productSlice";
+import {
+  keepDiary,
+  updateDiary,
+  getProductsWithId,
+} from "../features/diarys/diarySlice";
 import Button from "react-bootstrap/Button";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
+import { ICategories, ICategory } from "../models/CategoriesModel";
 
 const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
@@ -47,28 +51,30 @@ const DiaryForm = (props: any) => {
 
   console.log("d", diary);
 
-  //const products: any = useSelector((state: any) => state.products);
-
+  const categories: any = useSelector((state: any) => state.diarys.categories);
+  // console.log("categories", categories);
+  const products: any = useSelector((state: any) => state.diarys.products);
+  //console.log("products", products);
   useEffect(() => {
     console.log("d", diary);
     setDiary(diaryTemp);
     setProduct(productTemp);
 
-    // if (products.isError) {
-    //   console.log(products.message);
-    // }
-    debugger;
-    // dispatch(getCategories()).then(async () => {
-    //   (await products)
-    //     ? console.log("sephora productssssss", products)
-    //     : console.log("yok");
-    // });
     //setRoutins(routins);
-
-    // return () => {
-    //   reset();
-    // };
   }, [dispatch]);
+
+  const getProducts = (e: any) => {
+    const { name, value } = e.target;
+    console.log("np", name);
+    console.log("vp", value);
+    console.log("vl", e.target[value - 1].label);
+    debugger;
+    setProduct({
+      ...newProduct,
+      category: e.target[value - 1].label,
+    } as IProduct);
+    console.log(newProduct);
+  };
 
   const onChange = (e: any) => {
     const { name, value } = e.target;
@@ -78,9 +84,23 @@ const DiaryForm = (props: any) => {
     if (name === "productName" || name === "brandName" || name === "category") {
       setProduct({
         ...newProduct,
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target[value].label,
       } as IProduct);
-    } else {
+      if (name === "category") dispatch(getProductsWithId(value));
+    }
+    // else if (name === "category") {
+    //   setProduct({
+    //     ...newProduct,
+    //     category: e.target[value - 1].label,
+    //   } as IProduct);
+    //   console.log(newProduct);
+    //   // dispatch(getProductsWithId(value)).then(async () => {
+    //   //   (await products)
+    //   //     ? console.log("bulundu products", products)
+    //   //     : console.log("bulunamadı");
+    //   // });
+    // }
+    else {
       setRoutinInfo({
         ...newRoutinInfo,
         product: newProduct,
@@ -91,7 +111,7 @@ const DiaryForm = (props: any) => {
     routins.push(newRoutinInfo);
     setRoutins(routins);
 
-    //setDiary({ ...diary, [e.target.name]: e.target.value } as IDiary);
+    setDiary({ ...diary, [e.target.name]: e.target.value } as IDiary);
 
     const newDiary: IDiary = {
       diary: routins,
@@ -109,7 +129,7 @@ const DiaryForm = (props: any) => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    debugger;
+
     if (props.diaries.length !== 0) {
       console.log("diary form update", props.diaries);
       console.log("diary form update", diary);
@@ -134,12 +154,9 @@ const DiaryForm = (props: any) => {
               value={newProduct.category}
               onChange={(e) => onChange(e)}
             >
-              <option value="Cleaner">Cleaner</option>
-              <option value="sunscreen">Sunscreen</option>
-              <option value="moisturizer">Moisturizer</option>
-              <option value="serum">Serum</option>
-              <option value="tonic">Tonic</option>
-              <option value="mask">Mask</option>
+              {categories.map((cat: ICategory) => (
+                <option value={cat.id}>{cat.categoryName}</option>
+              ))}
             </select>
           </div>
           <div className="item">
@@ -150,10 +167,9 @@ const DiaryForm = (props: any) => {
               value={newProduct.brandName}
               onChange={(e) => onChange(e)}
             >
-              <option value="Klairs">Klairs</option>
-              <option value="Dermoskin">Dermoskin</option>
-              <option value="Celenes">Celenes</option>
-              <option value="Rovectin">Rovectin</option>
+              {products.map((product: any) => (
+                <option value={product.id}>{product.brandName}</option>
+              ))}
             </select>
           </div>
           <div className="item">
@@ -165,16 +181,9 @@ const DiaryForm = (props: any) => {
               onChange={(e) => onChange(e)}
               className="text-truncate"
             >
-              <option value="krem">Ato Probiyotik Krem</option>
-              <option value="krem2">Midnight Blue Moustrizer</option>
-              <option value="tonik" className="text-truncate">
-                Gözenek Sıkılaştırıcı Ve Arındırıcı Tonik (glycolic Acid 5% Aha
-                + Bha)
-              </option>
-              <option value="suns" className="text-truncate">
-                Aqua Soothing Uv Protector Spf 50+ Pa++++ Sakinleştirici
-                Fiziksel Uv Vegan
-              </option>
+              {products.map((product: any) => (
+                <option value={product.id}>{product.productName}</option>
+              ))}
             </select>
           </div>
           <div className="item">

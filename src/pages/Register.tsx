@@ -72,7 +72,7 @@ const Register = () => {
         isLoading: false,
         message: "",
       };
-      debugger;
+
       dispatch(register(userInitialInfoData));
     }
   };

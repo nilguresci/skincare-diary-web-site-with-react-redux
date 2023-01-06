@@ -4,25 +4,9 @@ import Modal from "react-bootstrap/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import DiaryForm from "../components/DiaryForm";
 import { useState, useEffect } from "react";
-import { getCategories, resetCat } from "../features/products/productSlice";
 
 const ProductModal = (props: any) => {
   const dispatch = useDispatch<any>();
-  // const products: any = useSelector((state: any) => state.categories);
-  // const [product, setProduct] = useState<any>({} as any);
-
-  // console.log("sephora productssssss", products);
-  // useEffect(() => {
-  //   dispatch(getCategories()).then(async () => {
-  //     (await products)
-  //       ? console.log("sephora productssssss", products)
-  //       : console.log("yok");
-  //   });
-
-  //   // return () => {
-  //   //   reset();
-  //   // };
-  // }, [dispatch, products]);
 
   return (
     <Modal

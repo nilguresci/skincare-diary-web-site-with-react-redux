@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import diaryService from "./diaryService";
+import productService from "../products/productService";
+import categoryService from "../categories/categoryService";
+import { ICategories, ICategory } from "../../models/CategoriesModel";
 import { IDiary, IRoutinInfo, IProduct } from "../../models/DiaryModels";
 
 const localStorageData = localStorage.getItem("user");
@@ -10,6 +13,8 @@ const initialState: IDiary = {
   isLoading: false,
   message: "",
   userId: localStorageData ? JSON.parse(localStorageData) : null,
+  categories: [],
+  products: [],
 };
 
 //keep diary
@@ -71,6 +76,46 @@ export const getMyDiaries: any = createAsyncThunk(
   }
 );
 
+//get categories
+export const getCategories: any = createAsyncThunk(
+  "diarys/getCategories",
+  async (_, thunkAPI) => {
+    debugger;
+    try {
+      return await categoryService.getCategories();
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//get products by category id
+export const getProductsWithId: any = createAsyncThunk(
+  "diarys/getProducts",
+  async (id: string, thunkAPI) => {
+    debugger;
+    try {
+      return await categoryService.getProductsWithId(id);
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const diarySlice = createSlice({
   name: "diary",
   initialState,
@@ -118,6 +163,35 @@ export const diarySlice = createSlice({
         state.diary = action.payload;
       })
       .addCase(updateDiary.rejected, (state: IDiary, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      //get categories işlemi için
+      .addCase(getCategories.pending, (state: any) => {
+        state.isLoading = true;
+      })
+      .addCase(getCategories.fulfilled, (state: any, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.categories = action.payload;
+      })
+      .addCase(getCategories.rejected, (state: any, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      //get products by id işlemi için
+      .addCase(getProductsWithId.pending, (state: any) => {
+        state.isLoading = true;
+      })
+      .addCase(getProductsWithId.fulfilled, (state: any, action: any) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        console.log("state products", action);
+        state.products = action.payload;
+      })
+      .addCase(getProductsWithId.rejected, (state: any, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.message = action.payload;

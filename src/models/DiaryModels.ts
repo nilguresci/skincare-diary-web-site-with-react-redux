@@ -21,4 +21,6 @@ export interface IDiary {
   message: string;
   userId: string; //diary i kayıt giren kullanıcının id'si // kullanıcı giriş yaptığında alınacak
   id?: string;
+  categories?: [] | null;
+  products?: [] | null;
 }

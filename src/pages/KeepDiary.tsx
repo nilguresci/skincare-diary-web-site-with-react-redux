@@ -10,8 +10,11 @@ import ProductModal from "../components/ProductModal";
 import ListGroup from "react-bootstrap/ListGroup";
 import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
-import { getMyDiaries, reset } from "../features/diarys/diarySlice";
-import { getCategories, resetCat } from "../features/products/productSlice";
+import {
+  getMyDiaries,
+  reset,
+  getCategories,
+} from "../features/diarys/diarySlice";
 import { IUser, IUserInitialInfo } from "../models/UserModel";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 
@@ -27,12 +30,13 @@ const KeepDiary = (props: any) => {
 
   const diaries: any = useSelector((state: any) => state.diarys.diary);
   const diariesState: IDiary = useSelector((state: any) => state.diarys);
-  const categories: any = useSelector((state: any) => state.categories);
+  const categories: IDiary = useSelector(
+    (state: any) => state.diarys.categories
+  );
+
   console.log("diariesSatet", diariesState);
-  console.log("aaa", categories);
 
   useEffect(() => {
-    debugger;
     if (diariesState.isError) {
       console.log(diariesState.message);
     }
@@ -48,7 +52,9 @@ const KeepDiary = (props: any) => {
     );
 
     dispatch(getCategories()).then(async () =>
-      (await categories) ? console.log(categories) : console.log("bulunamadı")
+      (await categories)
+        ? console.log("bulundu", categories)
+        : console.log("bulunamadı")
     );
 
     return () => {

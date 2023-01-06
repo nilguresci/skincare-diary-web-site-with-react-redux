@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCategories, resetCat } from "../features/products/productSlice";
 
 const ViewDiaries = () => {
   const dispatch = useDispatch<any>();

@@ -17,30 +17,69 @@ const config = {
 };
 
 const url = "https://sephora.p.rapidapi.com/categories/v2/list-root";
-
+const urlMockApi = "https://6314996efa82b738f74a8bce.mockapi.io";
+//with rapid api
 const getProductCategories = async () => {
   debugger;
-  const result = await axios
-    .request(options)
-    .then(function (response) {
-      console.log("sephore ctegories", response.data.rootCategories);
-      debugger;
-      return response.data.rootCategories;
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-  // const result = await axios.get(url, config).then((res) => {
+  // const result = await axios
+  //   .request(options)
+  //   .then(function (response) {
+  //     console.log("sephore ctegories", response.data.rootCategories);
+  //     debugger;
+  //     return response.data.rootCategories;
+  //   })
+  //   .catch(function (error) {
+  //     console.error(error);
+  //   });
+  const result = await axios.get(url, config);
+  //.then((res) => {
   //   console.log("sephore ctegories", res.data.rootCategories);
   // });
   //   .catch((err) => {
   //     console.error(err);
   //   });
-  console.log("serviceresult", result);
+  console.log("serviceresult", result.data.rootCategories);
+  return result.data.rootCategories;
+};
+
+const getProductCategories2 = async () => {
+  const result = await axios.get(urlMockApi + "/categories");
+  console.log("mock categories", result.data);
+  return result.data;
+};
+
+const getProducts: any = async () => {
+  const result = await axios.get(urlMockApi + "/Products");
+  return result.data;
+};
+
+//found user
+const findProduct: any = async (products: any, id: string) => {
+  const result = products.find((product: any): any => {
+    return product.id === id;
+  });
+  console.log("found", result);
   return result;
+};
+
+const getProductsWithId = async (id: string) => {
+  console.log(id);
+
+  const products: any = await getProducts();
+
+  findProduct(products, id)
+    .then((res: any) => {
+      console.log("mock products", res);
+      return res;
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
 };
 
 const productService = {
   getProductCategories,
+  getProductCategories2,
+  getProductsWithId,
 };
 export default productService;

@@ -37,7 +37,6 @@ export const register = createAsyncThunk(
 export const login = createAsyncThunk(
   "/auth/login",
   async (user: IUserInitialInfo, thunkAPI) => {
-    debugger;
     try {
       return await authService.login(user);
     } catch (error: any) {
@@ -82,7 +81,7 @@ export const authSlice = createSlice({
       .addCase(register.rejected, (state: IUserInitialInfo, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = "Something goes wrong!"; //action.payload
+        state.message = "Something goes wrong!";
         state.user = null;
       })
       .addCase(login.pending, (state: IUserInitialInfo) => {
