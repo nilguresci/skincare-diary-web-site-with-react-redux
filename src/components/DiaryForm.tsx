@@ -8,6 +8,7 @@ import {
 import Button from "react-bootstrap/Button";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 import { ICategories, ICategory } from "../models/CategoriesModel";
+import $ from "jquery";
 
 const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
@@ -17,7 +18,14 @@ const DiaryForm = (props: any) => {
   const productTemp: IProduct = {
     productName: "Midnight Moisturizer",
     brandName: "Klairs",
-    category: "Moisturizer",
+    categoryName: "Moisturizer for face",
+    id: "2",
+    catId: "2",
+  };
+
+  const categoryTemp: ICategory = {
+    id: "2",
+    categoryName: "Moisturizer for face",
   };
 
   const routinInfoTemp: IRoutinInfo[] = [
@@ -48,8 +56,8 @@ const DiaryForm = (props: any) => {
     {} as IRoutinInfo
   );
   const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
-
-  console.log("d", diary);
+  const [pro, setPro] = useState<IProduct[]>([productTemp] as IProduct[]);
+  console.log("d", pro);
 
   const categories: any = useSelector((state: any) => state.diarys.categories);
   // console.log("categories", categories);
@@ -59,9 +67,10 @@ const DiaryForm = (props: any) => {
     console.log("d", diary);
     setDiary(diaryTemp);
     setProduct(productTemp);
+    //setPro(products);
 
     //setRoutins(routins);
-  }, [dispatch]);
+  }, [products]);
 
   const getProducts = (e: any) => {
     const { name, value } = e.target;
@@ -71,9 +80,12 @@ const DiaryForm = (props: any) => {
     debugger;
     setProduct({
       ...newProduct,
-      category: e.target[value - 1].label,
+      categoryName: e.target[value - 1].label,
     } as IProduct);
     console.log(newProduct);
+    $(`#categorysSelect option[selected]`).removeAttr("selected");
+    $(`#categorysSelect option[value=${value}]`).attr("selected", "true");
+    //if (name === "categoryName") dispatch(getProductsWithId(value));
   };
 
   const onChange = (e: any) => {
@@ -81,19 +93,11 @@ const DiaryForm = (props: any) => {
     console.log("n", name);
     console.log("v", value);
 
-    if (name === "productName" || name === "brandName" || name === "category") {
-      setProduct({
-        ...newProduct,
-        [e.target.name]: e.target[value].label,
-      } as IProduct);
-      if (name === "category") dispatch(getProductsWithId(value));
+    if (name === "productName" || name === "brandName") {
+      debugger;
+      setProduct({ ...newProduct, [e.target.name]: value } as IProduct);
     }
-    // else if (name === "category") {
-    //   setProduct({
-    //     ...newProduct,
-    //     category: e.target[value - 1].label,
-    //   } as IProduct);
-    //   console.log(newProduct);
+    // else if (name === "categoryName") {
     //   // dispatch(getProductsWithId(value)).then(async () => {
     //   //   (await products)
     //   //     ? console.log("bulundu products", products)
@@ -149,10 +153,9 @@ const DiaryForm = (props: any) => {
             <label htmlFor="categorys">Category</label>
 
             <select
-              name="category"
-              id="categorys"
-              value={newProduct.category}
-              onChange={(e) => onChange(e)}
+              name="categoryName"
+              id="categorysSelect"
+              onChange={(e) => getProducts(e)}
             >
               {categories.map((cat: ICategory) => (
                 <option value={cat.id}>{cat.categoryName}</option>
@@ -167,8 +170,8 @@ const DiaryForm = (props: any) => {
               value={newProduct.brandName}
               onChange={(e) => onChange(e)}
             >
-              {products.map((product: any) => (
-                <option value={product.id}>{product.brandName}</option>
+              {pro.map((product: any) => (
+                <option value={product.brandName}>{product.brandName}</option>
               ))}
             </select>
           </div>
@@ -181,8 +184,10 @@ const DiaryForm = (props: any) => {
               onChange={(e) => onChange(e)}
               className="text-truncate"
             >
-              {products.map((product: any) => (
-                <option value={product.id}>{product.productName}</option>
+              {pro.map((product: any) => (
+                <option value={product.productName}>
+                  {product.productName}
+                </option>
               ))}
             </select>
           </div>

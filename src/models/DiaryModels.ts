@@ -1,7 +1,9 @@
 export interface IProduct {
   productName: string;
   brandName: string;
-  category: string;
+  categoryName: string;
+  id?: string;
+  catId?: string;
 }
 
 export interface IRoutinInfo {
