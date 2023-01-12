@@ -10,6 +10,7 @@ const getCategories = async () => {
 
 const getProducts: any = async () => {
   const result = await axios.get(urlMockApi + "/Products");
+
   return result.data;
 };
 

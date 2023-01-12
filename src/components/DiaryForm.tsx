@@ -51,7 +51,7 @@ const DiaryForm = (props: any) => {
   };
 
   const [diary, setDiary] = useState<IDiary>(props.diaries as IDiary);
-  const [newProduct, setProduct] = useState<IProduct>({} as IProduct);
+  const [newProduct, setProduct] = useState<IProduct>(productTemp as IProduct);
   const [newRoutinInfo, setRoutinInfo] = useState<IRoutinInfo>(
     {} as IRoutinInfo
   );
@@ -61,13 +61,15 @@ const DiaryForm = (props: any) => {
 
   const categories: any = useSelector((state: any) => state.diarys.categories);
   // console.log("categories", categories);
+
   const products: any = useSelector((state: any) => state.diarys.products);
-  //console.log("products", products);
+
+  console.log("products", products);
   useEffect(() => {
     console.log("d", diary);
     setDiary(diaryTemp);
-    setProduct(productTemp);
-    //setPro(products);
+    //setProduct(productTemp);
+    setPro(products);
 
     //setRoutins(routins);
   }, [products]);
@@ -77,15 +79,21 @@ const DiaryForm = (props: any) => {
     console.log("np", name);
     console.log("vp", value);
     console.log("vl", e.target[value - 1].label);
+    var categoryName = e.target[value - 1].label;
     debugger;
-    setProduct({
-      ...newProduct,
-      categoryName: e.target[value - 1].label,
-    } as IProduct);
+
+    dispatch(getProductsWithId(value)).then(async () => {
+      await setPro(products);
+      if (products.length == 1) {
+        debugger;
+        newProduct.brandName = products[0].brandName;
+        newProduct.productName = products[0].productName;
+      }
+      $(`#categorysSelect option[selected]`).removeAttr("selected");
+      $(`#categorysSelect option[value=${value}]`).attr("selected", "true");
+    });
+    newProduct.categoryName = categoryName;
     console.log(newProduct);
-    $(`#categorysSelect option[selected]`).removeAttr("selected");
-    $(`#categorysSelect option[value=${value}]`).attr("selected", "true");
-    //if (name === "categoryName") dispatch(getProductsWithId(value));
   };
 
   const onChange = (e: any) => {
@@ -96,15 +104,8 @@ const DiaryForm = (props: any) => {
     if (name === "productName" || name === "brandName") {
       debugger;
       setProduct({ ...newProduct, [e.target.name]: value } as IProduct);
-    }
-    // else if (name === "categoryName") {
-    //   // dispatch(getProductsWithId(value)).then(async () => {
-    //   //   (await products)
-    //   //     ? console.log("bulundu products", products)
-    //   //     : console.log("bulunamadı");
-    //   // });
-    // }
-    else {
+    } else {
+      debugger;
       setRoutinInfo({
         ...newRoutinInfo,
         product: newProduct,
@@ -155,6 +156,7 @@ const DiaryForm = (props: any) => {
             <select
               name="categoryName"
               id="categorysSelect"
+              //value={newProduct.categoryName ? newProduct.categoryName : ""}
               onChange={(e) => getProducts(e)}
             >
               {categories.map((cat: ICategory) => (
@@ -170,9 +172,16 @@ const DiaryForm = (props: any) => {
               value={newProduct.brandName}
               onChange={(e) => onChange(e)}
             >
-              {pro.map((product: any) => (
-                <option value={product.brandName}>{product.brandName}</option>
-              ))}
+              {pro.length == 1 ? (
+                <option selected={true} value={pro[0].brandName}>
+                  {pro[0].brandName}
+                </option>
+              ) : (
+                // <option selected>nil</option>
+                pro.map((product: any) => (
+                  <option value={product.brandName}>{product.brandName}</option>
+                ))
+              )}
             </select>
           </div>
           <div className="item">
