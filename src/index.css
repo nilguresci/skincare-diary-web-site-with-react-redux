@@ -52,6 +52,13 @@ h3 {
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 60px;
 }
+.header .btn {
+  align-items: center;
+}
+
+.header .btn svg {
+  margin-right: 4px;
+}
 
 .header ul {
   display: flex;
@@ -124,11 +131,27 @@ h3 {
 .plusContainer button {
   width: 75px;
   height: 75px;
-  background-color: purple;
+  background-color: #fefaff;
   border-radius: 11%;
-  border-color: transparent;
+  border-color: #f4e3f8;
   margin-right: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.plusContainer button svg {
+  color: purple;
+  height: 25px;
+  width: 20px;
+}
+
+.plusContainer button :hover svg {
+  color: #fff;
+}
+
+.plusContainer button:hover {
+  /*color: red; */
+  background-color: #f4e3f8;
+  border-color: transparent; /*set the color you want here*/
 }
 
 .plusContainer .plus {

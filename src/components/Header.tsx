@@ -42,28 +42,31 @@ const Header = () => {
           <></>
         )}
       </div>
-      <ul>
-        {user.user ? (
-          <li>
-            <button className="btn" onClick={onLogout}>
-              <FaSignOutAlt></FaSignOutAlt>Logout
-            </button>
-          </li>
-        ) : (
-          <>
+      <div className="logoutBtn">
+        <ul>
+          {user.user ? (
             <li>
-              <Link to="/login">
-                <FaSignInAlt></FaSignInAlt>Login
-              </Link>
+              <button className="btn" onClick={onLogout}>
+                <FaSignOutAlt></FaSignOutAlt>
+                <div>Logout</div>
+              </button>
             </li>
-            <li>
-              <Link to="/register">
-                <FaUser></FaUser>Register
-              </Link>
-            </li>
-          </>
-        )}
-      </ul>
+          ) : (
+            <>
+              <li>
+                <Link to="/login">
+                  <FaSignInAlt></FaSignInAlt>Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/register">
+                  <FaUser></FaUser>Register
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
     </header>
   );
 };
