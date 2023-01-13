@@ -130,7 +130,7 @@ const KeepDiary = (props: any) => {
         {generateButtons(count)}
         <button
           type="submit"
-          id={"addProduct" + btnId}
+          //id={"addProduct" + btnId}
           onClick={() => handleShow()}
         >
           <div className="plus">

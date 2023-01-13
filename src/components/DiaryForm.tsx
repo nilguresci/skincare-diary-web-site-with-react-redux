@@ -57,7 +57,7 @@ const DiaryForm = (props: any) => {
   );
   const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
   const [pro, setPro] = useState<IProduct[]>([productTemp] as IProduct[]);
-  console.log("d", pro);
+  console.log("pro", pro);
 
   const categories: any = useSelector((state: any) => state.diarys.categories);
   // console.log("categories", categories);
@@ -69,9 +69,17 @@ const DiaryForm = (props: any) => {
     console.log("d", diary);
     setDiary(diaryTemp);
     //setProduct(productTemp);
-    setPro(products);
-
     //setRoutins(routins);
+  }, []);
+
+  useEffect(() => {
+    setPro(products);
+    if (products.length === 1) {
+      debugger;
+      newProduct.brandName = products[0].brandName;
+      newProduct.productName = products[0].productName;
+      newProduct.categoryName = products[0].categoryName;
+    }
   }, [products]);
 
   const getProducts = (e: any) => {
@@ -80,19 +88,15 @@ const DiaryForm = (props: any) => {
     console.log("vp", value);
     console.log("vl", e.target[value - 1].label);
     var categoryName = e.target[value - 1].label;
+    console.log("seçilen category", categoryName);
     debugger;
 
-    dispatch(getProductsWithId(value)).then(async () => {
-      await setPro(products);
-      if (products.length == 1) {
-        debugger;
-        newProduct.brandName = products[0].brandName;
-        newProduct.productName = products[0].productName;
-      }
+    dispatch(getProductsWithId(value)).then(() => {
       $(`#categorysSelect option[selected]`).removeAttr("selected");
       $(`#categorysSelect option[value=${value}]`).attr("selected", "true");
+      newProduct.categoryName = categoryName;
     });
-    newProduct.categoryName = categoryName;
+
     console.log(newProduct);
   };
 
@@ -129,7 +133,7 @@ const DiaryForm = (props: any) => {
     };
     setDiary({ ...diary, diary: newDiary.diary } as IDiary);
 
-    console.log("ddddd", diary);
+    console.log("diary", diary);
   };
 
   const onSubmit = async (e: any) => {
@@ -138,6 +142,12 @@ const DiaryForm = (props: any) => {
     if (props.diaries.length !== 0) {
       console.log("diary form update", props.diaries);
       console.log("diary form update", diary);
+      let existingDiaries = props.diaries[0].diary;
+      debugger;
+      let addOnes = diary.diary;
+      let send = existingDiaries.concat(addOnes);
+      console.log("send", send);
+      diary.diary = send;
       dispatch(updateDiary(diary));
     } else {
       dispatch(keepDiary(diary));
