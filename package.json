@@ -14,6 +14,8 @@
     "@types/react-dom": "^18.0.6",
     "axios": "^1.1.3",
     "bootstrap": "^5.2.2",
+    "dotenv": "^16.0.3",
+    "firebase": "^9.17.1",
     "jquery": "^3.6.3",
     "mdb-react-ui-kit": "^5.0.0",
     "moment": "^2.29.4",
