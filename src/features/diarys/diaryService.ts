@@ -4,8 +4,15 @@ import { IDiary, IProduct, IRoutinInfo } from "../../models/DiaryModels";
 
 const API_URL = "https://6314996efa82b738f74a8bce.mockapi.io/diary";
 
+type Products = {
+  products: IRoutinInfo[];
+};
+var products: any = [];
 // keep diary - if there's no diary for today
-const keepDiary = async (diaryData: object) => {
+const keepDiary = async (diaryData: IDiary) => {
+  products = diaryData.diary;
+
+  console.log("service keep diary", diaryData);
   const response = await axios.post(API_URL, diaryData);
 
   return response.data;

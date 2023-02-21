@@ -14,7 +14,6 @@ const initialState: any = {
 export const getCategories: any = createAsyncThunk(
   "categorys/getAll",
   async (_, thunkAPI) => {
-    debugger;
     try {
       return await categoryService.getCategories();
     } catch (error: any) {

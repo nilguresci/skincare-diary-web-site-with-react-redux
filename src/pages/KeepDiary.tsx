@@ -10,6 +10,7 @@ import ProductModal from "../components/ProductModal";
 import ListGroup from "react-bootstrap/ListGroup";
 import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
+import testService from "../features/test/testService";
 import {
   getMyDiaries,
   reset,
@@ -17,6 +18,7 @@ import {
 } from "../features/diarys/diarySlice";
 import { IUser, IUserInitialInfo } from "../models/UserModel";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
+import { getBrands } from "../features/test/testSlice";
 
 const KeepDiary = (props: any) => {
   const navigate = useNavigate();
@@ -80,6 +82,35 @@ const KeepDiary = (props: any) => {
     setModalShow(true);
   };
 
+  type testData = {
+    productName: string;
+    brandName: string;
+    id?: string;
+    categoryId?: string;
+  };
+
+  const addData = async () => {
+    const sendData: testData = {
+      productName: "Böğürtlenli Dudak Balmı",
+      brandName: "Nivea",
+      id: "2",
+      categoryId: "9",
+    };
+    getData();
+    return await testService.addData(sendData);
+  };
+  const brands2: any = useSelector((state: any) => state.brands);
+
+  const getData = async () => {
+    //return await testService.getData();
+
+    dispatch(getBrands()).then(async (res: any) =>
+      console.log("get", res.payload)
+    );
+  };
+  useEffect(() => {
+    console.log("brands", brands2);
+  }, [brands2]);
   const generateButtons = (count: any, diary?: IRoutinInfo[]) => {
     console.log("parent handle save", count);
     let buttons = [];
@@ -138,6 +169,7 @@ const KeepDiary = (props: any) => {
           </div>
         </button>
       </div>
+      <button onClick={() => addData()}>addData</button>
       <ProductModal
         show={modalShow}
         id={"modal" + btnId}

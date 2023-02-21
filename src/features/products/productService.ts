@@ -20,12 +20,10 @@ const url = "https://sephora.p.rapidapi.com/categories/v2/list-root";
 const urlMockApi = "https://6314996efa82b738f74a8bce.mockapi.io";
 //with rapid api
 const getProductCategories = async () => {
-  debugger;
   // const result = await axios
   //   .request(options)
   //   .then(function (response) {
   //     console.log("sephore ctegories", response.data.rootCategories);
-  //     debugger;
   //     return response.data.rootCategories;
   //   })
   //   .catch(function (error) {

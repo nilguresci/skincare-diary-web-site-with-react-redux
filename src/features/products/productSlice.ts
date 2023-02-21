@@ -35,7 +35,6 @@ export const getCategories: any = createAsyncThunk(
   "products/getAll",
   async (_, thunkAPI) => {
     try {
-      debugger;
       return await productService.getProductCategories2();
     } catch (error: any) {
       const message =

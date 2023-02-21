@@ -80,7 +80,6 @@ export const getMyDiaries: any = createAsyncThunk(
 export const getCategories: any = createAsyncThunk(
   "diarys/getCategories",
   async (_, thunkAPI) => {
-    debugger;
     try {
       return await categoryService.getCategories();
     } catch (error: any) {
@@ -100,7 +99,6 @@ export const getCategories: any = createAsyncThunk(
 export const getProductsWithId: any = createAsyncThunk(
   "diarys/getProducts",
   async (id: string, thunkAPI) => {
-    debugger;
     try {
       return await categoryService.getProductsWithId(id);
     } catch (error: any) {

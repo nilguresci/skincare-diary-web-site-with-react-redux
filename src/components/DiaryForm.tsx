@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 import { ICategories, ICategory } from "../models/CategoriesModel";
 import $ from "jquery";
+import { getBrands } from "../features/test/testSlice";
 
 const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
@@ -57,14 +58,44 @@ const DiaryForm = (props: any) => {
   );
   const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
   const [pro, setPro] = useState<IProduct[]>([productTemp] as IProduct[]);
-  console.log("pro", pro);
+
+  type Brand = {
+    BrandName: string;
+    id: string;
+    crueltyFree: string;
+  };
+  type Brands = {
+    brands: Brand[];
+  };
+
+  const defaultBrands: Brand[] = [
+    { BrandName: "brand 1", id: "1", crueltyFree: "Yes" },
+  ];
+  const [brands, setBrands] = useState({} as Brand[]);
 
   const categories: any = useSelector((state: any) => state.diarys.categories);
-  // console.log("categories", categories);
 
   const products: any = useSelector((state: any) => state.diarys.products);
 
-  console.log("products", products);
+  const brands2: any = useSelector((state: any) => state.brands);
+
+  console.log("brands", brands);
+
+  useEffect(() => {
+    dispatch(getBrands()).then(async (res: any) => {
+      setBrands(res.payload);
+      console.log("get", res.payload);
+    });
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   setBrands(brands2);
+  // }, [brands2]);
+
+  // useEffect(() => {
+  //   setBrands(defaultBrands);
+  // }, []);
+
   useEffect(() => {
     console.log("d", diary);
     setDiary(diaryTemp);
@@ -75,7 +106,6 @@ const DiaryForm = (props: any) => {
   useEffect(() => {
     setPro(products);
     if (products.length === 1) {
-      debugger;
       newProduct.brandName = products[0].brandName;
       newProduct.productName = products[0].productName;
       newProduct.categoryName = products[0].categoryName;
@@ -89,7 +119,6 @@ const DiaryForm = (props: any) => {
     console.log("vl", e.target[value - 1].label);
     var categoryName = e.target[value - 1].label;
     console.log("seçilen category", categoryName);
-    debugger;
 
     dispatch(getProductsWithId(value)).then(() => {
       $(`#categorysSelect option[selected]`).removeAttr("selected");
@@ -106,10 +135,8 @@ const DiaryForm = (props: any) => {
     console.log("v", value);
 
     if (name === "productName" || name === "brandName") {
-      debugger;
       setProduct({ ...newProduct, [e.target.name]: value } as IProduct);
     } else {
-      debugger;
       setRoutinInfo({
         ...newRoutinInfo,
         product: newProduct,
@@ -143,7 +170,7 @@ const DiaryForm = (props: any) => {
       console.log("diary form update", props.diaries);
       console.log("diary form update", diary);
       let existingDiaries = props.diaries[0].diary;
-      debugger;
+
       let addOnes = diary.diary;
       let send = existingDiaries.concat(addOnes);
       console.log("send", send);
@@ -161,6 +188,27 @@ const DiaryForm = (props: any) => {
       <form onSubmit={onSubmit}>
         <div className="form-group flex-column">
           <div className="item">
+            <label htmlFor="brand">Brand</label>
+            <select
+              name="brandName"
+              id="brand"
+              value={newProduct.brandName}
+              onChange={(e) => onChange(e)}
+            >
+              {brands.length == 1 ? (
+                <option selected={true} value={brands[0].BrandName}>
+                  {brands[0].BrandName}
+                </option>
+              ) : (
+                // <option selected>nil</option>
+                brands.map((brand: any) => (
+                  <option value={brand.BrandName}>{brand.BrandName}</option>
+                ))
+              )}
+            </select>
+          </div>
+
+          <div className="item">
             <label htmlFor="categorys">Category</label>
 
             <select
@@ -174,26 +222,7 @@ const DiaryForm = (props: any) => {
               ))}
             </select>
           </div>
-          <div className="item">
-            <label htmlFor="brand">Brand</label>
-            <select
-              name="brandName"
-              id="brand"
-              value={newProduct.brandName}
-              onChange={(e) => onChange(e)}
-            >
-              {pro.length == 1 ? (
-                <option selected={true} value={pro[0].brandName}>
-                  {pro[0].brandName}
-                </option>
-              ) : (
-                // <option selected>nil</option>
-                pro.map((product: any) => (
-                  <option value={product.brandName}>{product.brandName}</option>
-                ))
-              )}
-            </select>
-          </div>
+
           <div className="item">
             <label htmlFor="productName">Product Name</label>
             <select

@@ -28,8 +28,15 @@ const addData = async (data: any) => {
   }
 };
 
+const getData = async () => {
+  const data = await getDocs(collection(db, "BrandCollection"));
+  console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+};
+
 const testService = {
-  //getData,
+  getData,
   addData,
 };
 
