@@ -6,7 +6,7 @@ const TestCollection = collection(db, "TestCollection");
 //register user
 const addData = async (data: any) => {
   try {
-    const docRef = await addDoc(collection(db, "TestCollection"), data);
+    const docRef = await addDoc(collection(db, "ProductCollection"), data);
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);

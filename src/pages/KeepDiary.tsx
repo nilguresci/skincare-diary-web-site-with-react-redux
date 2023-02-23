@@ -90,11 +90,10 @@ const KeepDiary = (props: any) => {
   };
 
   const addData = async () => {
-    const sendData: testData = {
-      productName: "Böğürtlenli Dudak Balmı",
-      brandName: "Nivea",
-      id: "2",
-      categoryId: "9",
+    const sendData: any = {
+      ProductName: "Böğürtlenli Dudak Balmı",
+      BrandID: "nvHf1lrJ14c9QUV7MkZy",
+      CategoryName: "Lip Balm",
     };
     return await testService.addData(sendData);
   };

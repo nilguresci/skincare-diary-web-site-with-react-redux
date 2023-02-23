@@ -85,15 +85,16 @@ const DiaryForm = (props: any) => {
   ];
 
   const [brands, setBrands] = useState([] as Brand[]);
-
   const stateBrands: any = useSelector((state: any) => state.brands.brands);
-
   console.log("brands2", stateBrands);
 
   const [allProducts, setAllProducts] = useState([]);
-
   const stateAllP: any = useSelector((state: any) => state.products.products);
   console.log("products", allProducts);
+
+  const [categories2, setCategories] = useState([]);
+  console.log("categories", categories2);
+
   useEffect(() => {
     dispatch(getBrands()).then(async () => {
       dispatch(await getProductsByBrand("nvHf1lrJ14c9QUV7MkZy"));
@@ -146,6 +147,9 @@ const DiaryForm = (props: any) => {
     console.log("seçildi", value);
 
     dispatch(getProductsByBrand(value));
+    // .then(async (res: any) => {
+    //   setCategories(res.payload.map((product: any) => product.CategoryName));
+    // });
   };
 
   const onChange = (e: any) => {
@@ -232,10 +236,10 @@ const DiaryForm = (props: any) => {
               name="categoryName"
               id="categorysSelect"
               //value={newProduct.categoryName ? newProduct.categoryName : ""}
-              onChange={(e) => getProducts(e)}
+              //onChange={(e) => getProducts(e)}
             >
-              {categories.map((cat: ICategory) => (
-                <option value={cat.id}>{cat.categoryName}</option>
+              {allProducts.map((product: any) => (
+                <option>{product.CategoryName}</option>
               ))}
             </select>
           </div>
@@ -245,13 +249,13 @@ const DiaryForm = (props: any) => {
             <select
               name="productName"
               id="productName"
-              value={newProduct.productName}
-              onChange={(e) => onChange(e)}
+              //value={newProduct.productName}
+              //onChange={(e) => onChange(e)}
               className="text-truncate"
             >
-              {pro.map((product: any) => (
-                <option value={product.productName}>
-                  {product.productName}
+              {allProducts.map((product: any) => (
+                <option value={product.ProductName}>
+                  {product.ProductName}
                 </option>
               ))}
             </select>
