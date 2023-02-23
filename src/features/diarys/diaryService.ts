@@ -11,19 +11,13 @@ var products: any = [];
 // keep diary - if there's no diary for today
 const keepDiary = async (diaryData: IDiary) => {
   products = diaryData.diary;
-
-  console.log("service keep diary", diaryData);
   const response = await axios.post(API_URL, diaryData);
-
   return response.data;
 };
 
 // update diary
 const updateDiary = async (diaryData: IDiary) => {
-  console.log("update diarydata", diaryData);
-  console.log("update id", API_URL + "/" + diaryData.id);
   const response = await axios.put(API_URL + "/" + diaryData.id, diaryData);
-
   return response.data;
 };
 
@@ -43,7 +37,6 @@ const getDiaries = async () => {
     //const diaries2 = response.data.filter((d: any) => d.userId === userId);
 
     setTimeout(() => {
-      console.log("diaries", todayDiary);
       resolve(todayDiary);
     }, 100);
   });

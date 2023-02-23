@@ -22,7 +22,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
   const user: userInitialInfo = useSelector((state: any) => state.auth);
-  console.log(user.user);
+  //console.log(user.user);
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
