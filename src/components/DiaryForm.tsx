@@ -9,7 +9,11 @@ import Button from "react-bootstrap/Button";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
 import { ICategories, ICategory } from "../models/CategoriesModel";
 import $ from "jquery";
-import { getBrands } from "../features/test/testSlice";
+import { getBrands } from "../features/brands/brandSlice";
+import {
+  getProducts as getProductsSlice,
+  getProductsByBrand,
+} from "../features/products/productSlice";
 
 const DiaryForm = (props: any) => {
   const dispatch = useDispatch<any>();
@@ -59,6 +63,10 @@ const DiaryForm = (props: any) => {
   const [routins, setRoutins] = useState<IRoutinInfo[]>([] as IRoutinInfo[]);
   const [pro, setPro] = useState<IProduct[]>([productTemp] as IProduct[]);
 
+  const categories: any = useSelector((state: any) => state.diarys.categories);
+
+  const products: any = useSelector((state: any) => state.diarys.products);
+
   type Brand = {
     BrandName: string;
     id: string;
@@ -66,35 +74,39 @@ const DiaryForm = (props: any) => {
   };
   type Brands = {
     brands: Brand[];
+    isError: boolean;
+    isSuccess: boolean;
+    isLoading: boolean;
+    message: string;
   };
 
   const defaultBrands: Brand[] = [
     { BrandName: "brand 1", id: "1", crueltyFree: "Yes" },
   ];
-  const [brands, setBrands] = useState({} as Brand[]);
 
-  const categories: any = useSelector((state: any) => state.diarys.categories);
+  const [brands, setBrands] = useState([] as Brand[]);
 
-  const products: any = useSelector((state: any) => state.diarys.products);
+  const stateBrands: any = useSelector((state: any) => state.brands.brands);
 
-  const brands2: any = useSelector((state: any) => state.brands);
+  console.log("brands2", stateBrands);
 
-  console.log("brands", brands);
+  const [allProducts, setAllProducts] = useState([]);
 
+  const stateAllP: any = useSelector((state: any) => state.products.products);
+  console.log("products", allProducts);
   useEffect(() => {
-    dispatch(getBrands()).then(async (res: any) => {
-      setBrands(res.payload);
-      console.log("get", res.payload);
+    dispatch(getBrands()).then(async () => {
+      dispatch(await getProductsByBrand("nvHf1lrJ14c9QUV7MkZy"));
     });
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   setBrands(brands2);
-  // }, [brands2]);
+  useEffect(() => {
+    setBrands(stateBrands);
+  }, [stateBrands]);
 
-  // useEffect(() => {
-  //   setBrands(defaultBrands);
-  // }, []);
+  useEffect(() => {
+    setAllProducts(stateAllP);
+  }, [stateAllP]);
 
   useEffect(() => {
     console.log("d", diary);
@@ -127,6 +139,13 @@ const DiaryForm = (props: any) => {
     });
 
     console.log(newProduct);
+  };
+
+  const selectBrand = (e: any) => {
+    const { name, value } = e.target;
+    console.log("seçildi", value);
+
+    dispatch(getProductsByBrand(value));
   };
 
   const onChange = (e: any) => {
@@ -192,17 +211,15 @@ const DiaryForm = (props: any) => {
             <select
               name="brandName"
               id="brand"
-              value={newProduct.brandName}
-              onChange={(e) => onChange(e)}
+              onChange={(e) => selectBrand(e)}
             >
               {brands.length == 1 ? (
-                <option selected={true} value={brands[0].BrandName}>
+                <option selected={true} value={brands[0].id}>
                   {brands[0].BrandName}
                 </option>
               ) : (
-                // <option selected>nil</option>
                 brands.map((brand: any) => (
-                  <option value={brand.BrandName}>{brand.BrandName}</option>
+                  <option value={brand.id}>{brand.BrandName}</option>
                 ))
               )}
             </select>

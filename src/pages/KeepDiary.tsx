@@ -10,7 +10,7 @@ import ProductModal from "../components/ProductModal";
 import ListGroup from "react-bootstrap/ListGroup";
 import Spinner from "../components/Spinner";
 import Table from "react-bootstrap/Table";
-import testService from "../features/test/testService";
+import testService from "../features/brands/brandService";
 import {
   getMyDiaries,
   reset,
@@ -18,14 +18,13 @@ import {
 } from "../features/diarys/diarySlice";
 import { IUser, IUserInitialInfo } from "../models/UserModel";
 import { IDiary, IProduct, IRoutinInfo } from "../models/DiaryModels";
-import { getBrands } from "../features/test/testSlice";
 
 const KeepDiary = (props: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
 
   const newObj: IUserInitialInfo = useSelector((state: any) => state.auth); //login olan user
-  console.log("loggedin user", newObj);
+  //console.log("loggedin user", newObj);
 
   const localStorageData: any = localStorage.getItem("user");
   //console.log("localstorage", JSON.parse(localStorageData));
@@ -36,7 +35,7 @@ const KeepDiary = (props: any) => {
     (state: any) => state.diarys.categories
   );
 
-  console.log("diariesSatet", diariesState);
+  //console.log("diariesSatet", diariesState);
 
   useEffect(() => {
     if (diariesState.isError) {
@@ -53,10 +52,11 @@ const KeepDiary = (props: any) => {
         : console.log("bulunamadı")
     );
 
-    dispatch(getCategories()).then(async () =>
-      (await categories)
-        ? console.log("bulundu", categories)
-        : console.log("bulunamadı")
+    dispatch(getCategories()).then(
+      async () => {}
+      // (await categories)
+      //   ? console.log("bulundu", categories)
+      //   : console.log("bulunamadı")
     );
 
     return () => {
@@ -96,23 +96,10 @@ const KeepDiary = (props: any) => {
       id: "2",
       categoryId: "9",
     };
-    getData();
     return await testService.addData(sendData);
   };
-  const brands2: any = useSelector((state: any) => state.brands);
 
-  const getData = async () => {
-    //return await testService.getData();
-
-    dispatch(getBrands()).then(async (res: any) =>
-      console.log("get", res.payload)
-    );
-  };
-  useEffect(() => {
-    console.log("brands", brands2);
-  }, [brands2]);
   const generateButtons = (count: any, diary?: IRoutinInfo[]) => {
-    console.log("parent handle save", count);
     let buttons = [];
 
     for (let i = 0; i < count; i++) {
