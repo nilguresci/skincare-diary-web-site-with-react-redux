@@ -1,41 +1,39 @@
+import { IProductCol, IProductsCol } from "./../../models/ProductColModel";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import productService from "./productService";
 import { ICategories, ICategory } from "../../models/CategoriesModel";
 
-type Category = {
-  id: string;
-  categoryName: string;
-  //categoryId: string;
-  // displayName: string;
-  // hasChildCategories?: boolean;
-  // hasDropdownMenu?: boolean;
-  // selectedThumbImage?: string;
-  // showInAppJaBsDropdown?: boolean;
-  // targetUrl?: string;
-  // thumbImage?: string;
-  // megaNavMarketingBanner?: object;
-};
-
-type Categories = {
-  categories: [] | null;
-  isError: boolean;
-  isSuccess: boolean;
-  isLoading: boolean;
-  message: string;
-};
-const initialState: ICategories = {
-  categories: [],
+const initialState: IProductsCol = {
+  products: [],
   isError: false,
-  isSuccess: true,
+  isSuccess: false,
   isLoading: false,
   message: "",
 };
-//get categories
-export const getCategories: any = createAsyncThunk(
-  "products/getAll",
+
+export const getProducts: any = createAsyncThunk(
+  "product/getAll",
   async (_, thunkAPI) => {
     try {
-      return await productService.getProductCategories2();
+      return await productService.getProducts2();
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getProductsByBrand: any = createAsyncThunk(
+  "product/getByBrand",
+  async (id, thunkAPI) => {
+    try {
+      return await productService.getProductsByBrand(id);
     } catch (error: any) {
       const message =
         (error.response &&
@@ -50,26 +48,46 @@ export const getCategories: any = createAsyncThunk(
 );
 
 export const productSlice = createSlice({
-  name: "product",
+  name: "products",
   initialState,
   reducers: {
-    reset: (state: ICategories) => initialState,
+    reset: (state: IProductsCol) => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCategories.pending, (state: ICategories) => {
+      .addCase(getProducts.pending, (state: IProductsCol) => {
         state.isLoading = true;
       })
-      .addCase(getCategories.fulfilled, (state: ICategories, action: any) => {
+      .addCase(getProducts.fulfilled, (state: IProductsCol, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.categories = action.payload;
+        state.products = action.payload;
       })
-      .addCase(getCategories.rejected, (state: ICategories, action: any) => {
+      .addCase(getProducts.rejected, (state: IProductsCol, action: any) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.message = action.payload;
-      });
+      })
+      .addCase(getProductsByBrand.pending, (state: IProductsCol) => {
+        state.isLoading = true;
+      })
+      .addCase(
+        getProductsByBrand.fulfilled,
+        (state: IProductsCol, action: any) => {
+          debugger;
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.products = action.payload;
+        }
+      )
+      .addCase(
+        getProductsByBrand.rejected,
+        (state: IProductsCol, action: any) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.message = action.payload;
+        }
+      );
   },
 });
 

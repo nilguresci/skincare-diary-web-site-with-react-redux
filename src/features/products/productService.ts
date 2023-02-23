@@ -1,5 +1,15 @@
 import axios from "axios";
-
+import {
+  collection,
+  getDocs,
+  addDoc,
+  setDoc,
+  doc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
+import { fConfig as db } from "../../firebaseConfig";
 const options = {
   method: "GET",
   url: "https://sephora.p.rapidapi.com/categories/v2/list-root",
@@ -75,9 +85,35 @@ const getProductsWithId = async (id: string) => {
     });
 };
 
+const getProducts2: any = async () => {
+  const data = await getDocs(collection(db, "ProductCollection"));
+  console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+  return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+};
+
+const getProductsByBrand: any = async (id: string) => {
+  const data = query(
+    collection(db, "ProductCollection"),
+    where("BrandID", "==", id)
+  );
+  const querySnapshot = await getDocs(data);
+  console.log(querySnapshot);
+  const send: any = [];
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+    send.push(doc.data());
+  });
+  console.log(send);
+  return send;
+};
+
 const productService = {
   getProductCategories,
   getProductCategories2,
   getProductsWithId,
+  getProducts2,
+  getProductsByBrand,
 };
 export default productService;
