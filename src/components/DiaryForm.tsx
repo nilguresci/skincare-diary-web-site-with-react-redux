@@ -89,6 +89,7 @@ const DiaryForm = (props: any) => {
   console.log("brands2", stateBrands);
 
   const [allProducts, setAllProducts] = useState([]);
+  const [selectableProducts, setSelectableProducts] = useState([]);
   const stateAllP: any = useSelector((state: any) => state.products.products);
   console.log("products", allProducts);
 
@@ -107,6 +108,8 @@ const DiaryForm = (props: any) => {
 
   useEffect(() => {
     setAllProducts(stateAllP);
+    setCategories(stateAllP);
+    setSelectableProducts(stateAllP);
   }, [stateAllP]);
 
   useEffect(() => {
@@ -144,12 +147,16 @@ const DiaryForm = (props: any) => {
 
   const selectBrand = (e: any) => {
     const { name, value } = e.target;
-    console.log("seçildi", value);
-
     dispatch(getProductsByBrand(value));
-    // .then(async (res: any) => {
-    //   setCategories(res.payload.map((product: any) => product.CategoryName));
-    // });
+  };
+
+  const selectCategory = (e: any) => {
+    const { value } = e.target;
+    console.log("category", value);
+
+    setSelectableProducts(
+      allProducts.filter((product: any) => product.CategoryName === value)
+    );
   };
 
   const onChange = (e: any) => {
@@ -236,10 +243,10 @@ const DiaryForm = (props: any) => {
               name="categoryName"
               id="categorysSelect"
               //value={newProduct.categoryName ? newProduct.categoryName : ""}
-              //onChange={(e) => getProducts(e)}
+              onChange={(e) => selectCategory(e)}
             >
-              {allProducts.map((product: any) => (
-                <option>{product.CategoryName}</option>
+              {categories2.map((category: any) => (
+                <option>{category.CategoryName}</option>
               ))}
             </select>
           </div>
@@ -253,7 +260,7 @@ const DiaryForm = (props: any) => {
               //onChange={(e) => onChange(e)}
               className="text-truncate"
             >
-              {allProducts.map((product: any) => (
+              {selectableProducts.map((product: any) => (
                 <option value={product.ProductName}>
                   {product.ProductName}
                 </option>
