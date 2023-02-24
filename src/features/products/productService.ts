@@ -101,7 +101,6 @@ const getProductsByBrand: any = async (id: string) => {
   querySnapshot.forEach((doc) => {
     send.push(doc.data());
   });
-
   return send;
 };
 

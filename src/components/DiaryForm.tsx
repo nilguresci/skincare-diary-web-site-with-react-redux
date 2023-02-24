@@ -108,7 +108,9 @@ const DiaryForm = (props: any) => {
 
   useEffect(() => {
     setAllProducts(stateAllP);
-    setCategories(stateAllP);
+    let categoryNames: any = [];
+    stateAllP.map((p: any) => categoryNames.push(p.CategoryName));
+    removeDuplicates(categoryNames);
     setSelectableProducts(stateAllP);
   }, [stateAllP]);
 
@@ -147,17 +149,25 @@ const DiaryForm = (props: any) => {
 
   const selectBrand = (e: any) => {
     const { name, value } = e.target;
+
     dispatch(getProductsByBrand(value));
   };
 
   const selectCategory = (e: any) => {
     const { value } = e.target;
-    console.log("category", value);
 
     setSelectableProducts(
       allProducts.filter((product: any) => product.CategoryName === value)
     );
   };
+
+  function removeDuplicates(arr: any) {
+    let uniqueCategoryArray: any = arr.filter(
+      (item: any, index: any) => arr.indexOf(item) === index
+    );
+    setCategories(uniqueCategoryArray);
+    return uniqueCategoryArray;
+  }
 
   const onChange = (e: any) => {
     const { name, value } = e.target;
@@ -246,7 +256,7 @@ const DiaryForm = (props: any) => {
               onChange={(e) => selectCategory(e)}
             >
               {categories2.map((category: any) => (
-                <option>{category.CategoryName}</option>
+                <option>{category}</option>
               ))}
             </select>
           </div>
